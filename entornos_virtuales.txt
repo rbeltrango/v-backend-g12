@@ -1,0 +1,15 @@
+para activar el entorno
+en windows con gitbash
+$ source nombre_entorno/Scripts/activate
+
+para desactivar el entorno
+$ deactivate
+
+para listar las librerias
+$ pip list
+
+para instalar una libreria
+$ pip install nombre_package
+
+para desinstalar una libreria
+$ pip uninstall nombre_package
