@@ -1,2 +1,17 @@
-CLI > 
+CLI > Interfaz de Linea de Comandos (Command Line Interface)
+Todos los comandos de Django se realizan mediante el comando 'django-admin'
+
+python manage.py runserver > levantar el proyecto en Django
+
+python manage.py showmigrations > mostrará todas las migraciones creadas en mi proyecto. 
+Las que no se hayan ejecutado no estarán marcadas
+
+python manage.py migrate > ejecutará la migración pendiente a la base de datos.
+Se puede colocar el nombre de la aplicación para que sólo se ejecute dicha aplicación
+
+python manage.py makemigrations NOMBRE_APP --name NOMBRE_MIGRACION > creará una nueva migración de nuestra aplicación con 
+todos los cambios que se habrán hecho en el ORM
+
+python manage.py sqlmigrate NOMBRE_APP NUMERO_MIGRACION > mostrará el SQL de la migración creada
+
 
