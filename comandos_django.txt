@@ -14,4 +14,5 @@ todos los cambios que se habrán hecho en el ORM
 
 python manage.py sqlmigrate NOMBRE_APP NUMERO_MIGRACION > mostrará el SQL de la migración creada
 
-
+no se puede crear aplicaciones con nombres  de aplicaciones de Django:
+auth, contenttypes, message, users, admin, sessions
