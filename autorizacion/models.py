@@ -2,6 +2,7 @@ from django.db import models
 # AbstractBaseUser permite modificar todo el modelo auth_user desde cero
 
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from .authManager import UserManager
 
 # Create your models here.
 class Usuario(AbstractBaseUser, PermissionsMixin):
@@ -22,4 +23,16 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     createdAt=models.DateTimeField(auto_now_add=True, db_column='created_at')
     
     # comportamiento que tendrá el modelo cuando se realice el comando createsuperuser 
-    objects=None
+    objects=UserManager()
+
+    # será el campo que pedirá 
+    USERNAME_FIELD='correo'
+
+    # serán los atributos que se solicitaran por la consola al crear el superussuario
+    REQUIRED_FIELDS=['nombre', 'rol']
+
+    class Meta:
+        db_table='usuarios'
+
+
+
