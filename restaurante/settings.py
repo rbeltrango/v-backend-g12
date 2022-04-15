@@ -14,6 +14,12 @@ from datetime import timedelta
 from pathlib import Path
 from os import environ
 from dotenv import load_dotenv
+# crea la config entre el proyecto y cloudinary
+import cloudinary
+# para subir imagenes
+import cloudinary.uploader
+#para usar la API  de cloudinary
+import cloudinary.api
 
 load_dotenv()
 
@@ -43,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'cloudinary',
     'fact_electr',
     'menu',
     'autorizacion'
@@ -140,11 +147,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL='autorizacion.Usuario'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    }
+    ]
 }
-
+# https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
 SIMPLE_JWT ={
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1)
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5,hours=1),
+    'ALGORITHM':'HS384',
+    #'SIGNING_KEY':'contrasena'
+
 }
+# https://cloudinary.com/documentation/django_integration#installation
+cloudinary.config(
+    cloud_name=environ.get('CLOUDINARY_NAME'),
+    api_key=environ.get('CLOUDINARY_API_KEY'),
+    api_secret=environ.get('CLOUDINARY_SECRET')
+)
