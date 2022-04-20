@@ -1,6 +1,7 @@
+from pytz import timezone
 from .models import Plato, Stock
-from rest_framework.generics import CreateAPIView, ListCreateAPIView
-from .serializer import PedidosSerializer, PlatoSerializer, StockSerializer
+from rest_framework.generics import CreateAPIView, ListCreateAPIView,CreateAPIView
+from .serializer import AgregarDetallePedidoSerializer, PedidosSerializer, PlatoSerializer, StockSerializer
 from rest_framework.permissions import (
 AllowAny, # sirve para que el controlador se pubilco
 IsAuthenticated, # los controladores soliciten una token de acceso
@@ -13,6 +14,8 @@ from cloudinary import CloudinaryImage
 from .permissions import SoloAdminPuedeEscribir, SoloMozoPuedeEscribir
 from fact_electr.models import Pedido, DetallePedido
 from rest_framework import status
+from django.utils import timezone
+
 
 class PlatoApiView(ListCreateAPIView):
     serializer_class=PlatoSerializer
@@ -50,3 +53,28 @@ class PedidoApiView(ListCreateAPIView):
         data.save()
 
         return Response(data=data.data, status=status.HTTP_201_CREATED)
+
+class AgregarDetallePedidoApiView(CreateAPIView):
+    queryset=DetallePedido.objects.all()
+    serializer_class=AgregarDetallePedidoSerializer
+
+    def post(self, request:Request):
+        # 1. valido la data con el serializer
+        data=self.serializer_class(data=request.data)
+        data.is_valid(raise_exception=True)
+        # 2. verifico que tenga esa cantidad de productos en stock
+        stock=Stock.objects.filter(fecha=timezone.now(),
+                                    platoId=data.validated_data.get('platoId')).first()
+        print(stock)
+        if stock is None:
+            return Response (data={'message':'No hay stock para ese producto para el dia de hoy'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        # información que me envía el front
+        #{
+        # "cantidad":2,
+        # "plato":1,
+        # "pedido_id": 2
+        # }
+        # verificar que en el stock esté en base al dia de hoy esa cantidad
+        # 3. agrego el detalle
+        return Response(data={'message':'Detalle agregado exitosamente'})
