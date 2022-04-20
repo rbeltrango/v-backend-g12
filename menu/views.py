@@ -1,6 +1,6 @@
-from .models import Plato
+from .models import Plato, Stock
 from rest_framework.generics import CreateAPIView, ListCreateAPIView
-from .serializer import PlatoSerializer
+from .serializer import PedidosSerializer, PlatoSerializer, StockSerializer
 from rest_framework.permissions import (
 AllowAny, # sirve para que el controlador se pubilco
 IsAuthenticated, # los controladores soliciten una token de acceso
@@ -10,6 +10,9 @@ IsAdminUser, # verifica que en la token de acceso buscará al usuario y verá si
 from rest_framework.response import Response
 from rest_framework.request import Request
 from cloudinary import CloudinaryImage
+from .permissions import SoloAdminPuedeEscribir, SoloMozoPuedeEscribir
+from fact_electr.models import Pedido, DetallePedido
+from rest_framework import status
 
 class PlatoApiView(ListCreateAPIView):
     serializer_class=PlatoSerializer
@@ -28,3 +31,22 @@ class PlatoApiView(ListCreateAPIView):
         print(link)
         return Response(data=data.data)
         
+class StockApiView(ListCreateAPIView):
+    serializer_class=StockSerializer
+    queryset= Stock.objects.all()
+    permission_classes=[IsAuthenticated, SoloAdminPuedeEscribir]
+
+class PedidoApiView(ListCreateAPIView):
+    queryset=Pedido.objects.all()
+    serializer_class=PedidosSerializer
+    permission_classes=[IsAuthenticated, SoloMozoPuedeEscribir]
+
+    def post(self, request:Request):
+        print(request.user)
+        # le agrego al body el usuarioId proveniente de la token
+        request.data['usuarioId']=request.user.id
+        data=self.serializer_class(data=request.data)
+        data.is_valid(raise_exception=True)
+        data.save()
+
+        return Response(data=data.data, status=status.HTTP_201_CREATED)

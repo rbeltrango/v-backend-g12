@@ -20,4 +20,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/',include('autorizacion.urls')),
     path('platos/', include('menu.urls')),
+    
 ]
