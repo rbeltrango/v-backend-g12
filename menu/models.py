@@ -20,7 +20,7 @@ class Stock(models.Model):
     id= models.AutoField(primary_key=True)
     fecha=models.DateField(null=False)
     cantidad=models.IntegerField(null=False)
-    precio_unitario=models.FloatField(null=False)
+    precio_diario=models.FloatField(null=False)
 
     # related_name > servirá para ingresar desde el modelo del cual se está creando la relación (en este caso desde
     # platos podremos ingresar a todos los stocks)

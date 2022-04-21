@@ -41,7 +41,7 @@ class Comprobante(models.Model):
 class DetallePedido(models.Model):
     id=models.AutoField(primary_key=True)
     cantidad=models.IntegerField()
-    stockID=models.ForeignKey(
+    stockId=models.ForeignKey(
         to=Stock, related_name='pedidos', on_delete=models.CASCADE, db_column='stock_id')
     pedidoId= models.ForeignKey(
             to =Pedido, related_name='detalle_pedidos', on_delete=models.CASCADE, db_column='pedido_id')

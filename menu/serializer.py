@@ -1,3 +1,4 @@
+from dataclasses import field
 from rest_framework import serializers
 from .models import Plato, Stock
 from fact_electr.models import Pedido
@@ -13,6 +14,11 @@ class StockSerializer(serializers.ModelSerializer):
         fields='__all__'
         model=Stock
         depth=1
+
+class StockCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields='__all__'
+        model =Stock
 
 class PedidosSerializer(serializers.ModelSerializer):
 
