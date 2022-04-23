@@ -9,8 +9,24 @@ from os import environ
 def generar_comprobante(tipo_de_comprobante:int, tipo_documento:str, numero_documento:str, pedido_id:int):
     # sirve para generar un comprobante electronico ya sea factura  , boleta etc en base a un pedido
     pedido=Pedido.objects.filter(id=pedido_id).first()
+    # forma haciendo una segunda consulta a la tabla comprobantes
+    validacionComprobante=Comprobante.objects.filter(
+        pedido=pedido.id).first()
+    
+    if validacionComprobante is not None:
+        raise Exception('Este pedido ya tiene un comprobante')
+
+    # Forma usando los related names
+    #try:
+    #    if pedido.comprobante is not None:
+    #        raise Exception('Este pedido ya tiene comprobante')
+
+    #except Pedido.comprobante.RelatedObjectDoesNotExist:
+    #    pass
+    
     if pedido is None:
         raise Exception('Pedido no existe')
+
     if pedido.total > 700 and tipo_documento is None:
             raise Exception('El pedido al ser mayor a 700 soles tiene que tener un cliente registrado')
 
@@ -166,16 +182,26 @@ def generar_comprobante(tipo_de_comprobante:int, tipo_documento:str, numero_docu
         'items':items
         }
     url_nubefact=environ.get('NUBEFACT_URL')
+
     headers_nubefact={
         'Authorization':environ.get('NUBEFACT_TOKEN'),
         'Content-Type':'application/json'
     }
+
     respuestaNubefact=requests.post(
         url_nubefact, headers=headers_nubefact, json=comprobante_body)
-    
-    print(respuestaNubefact.json())
 
+    if respuestaNubefact.json().get('errors'):
+        raise Exception(respuestaNubefact.json().get('errors'))
 
-
-
-    
+    else:
+        nuevoComprobante=Comprobante(
+            serie=serie,
+            numero=numero,
+            pdf=respuestaNubefact.json().get('enlace_del_pdf'), 
+            cdr=respuestaNubefact.json().get('enlace_del_cdr'), 
+            xml=respuestaNubefact.json().get('enlace_del_xml'), 
+            tipo=tipo, 
+            pedido=pedido)
+        nuevoComprobante.save()
+        return nuevoComprobante

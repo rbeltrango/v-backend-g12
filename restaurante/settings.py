@@ -36,7 +36,8 @@ SECRET_KEY = 'django-insecure-cgkpia@4ed@lnqn)raas4tan0-_61^lpi^2zycpzn!_fmg)b6h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# allowed hosts son los host que van a poder levantar la API
+ALLOWED_HOSTS = ['localhost','127.0.0.1']
 
 
 # Application definition
@@ -48,8 +49,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #librerias
     'rest_framework',
     'cloudinary',
+    'corsheaders',
+    #aplicaciones
     'fact_electr',
     'menu',
     'autorizacion'
@@ -57,7 +61,10 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    #agregar el middleware de los cors hasta antes del CommonMiddleware
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -164,3 +171,19 @@ cloudinary.config(
     api_key=environ.get('CLOUDINARY_API_KEY'),
     api_secret=environ.get('CLOUDINARY_SECRET')
 )
+
+# 
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# indica donde se guardaran los archivos staticos (css, js. html)usados por drf, 
+# y el panel administrativo
+
+STATIC_ROOT=BASE_DIR/'static_files'
+
+# permitira todos los origenes
+# CORS_ORIGIN_ALLOW_ALL=True
+# son los origenes permitidos, si queremos usar todos CORS_ORIGIN_ALLOW_ALL
+CORS_ALLOWED_ORIGINS=['http://127.0.0.1:5500', 'http://mifront.netlify.app'] 
+# son los metodos permitidos, por defecto todos
+CORS_ALLOWED_METHODS=['GET', 'POST'] # NO PODRA PUT NI DELETE
+# los headers son las cabeceras permitidas, por defecto todos
+CORS_ALLOWED_METHODS=['content-type', 'authentication','origin']
