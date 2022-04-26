@@ -1,6 +1,0 @@
-entorno_django/
-__pycache__/
-.env
-
-# archivos staticos de Django
-static_files/
