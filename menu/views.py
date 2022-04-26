@@ -28,12 +28,12 @@ class PlatoApiView(ListCreateAPIView):
     def get(self, request:Request):        
         data=self.serializer_class(instance=self.get_queryset(), many=True)
         # hacer una iteracion para modificar la foto de cada plato y devolver el link de la foto
-        print(data.data[1].get('foto'))
+        # print(data.data[1].get('foto'))
         # del contenido de la foto solamente extraer el nombre del archivo o si esten en uan carpeta extraer la carpeta y archivo
-        link=CloudinaryImage(
-            'plato/xoo5lqjgt3z4whvmb9st.jpg').image(secure=True)
+        #link=CloudinaryImage(
+         #   'plato/xoo5lqjgt3z4whvmb9st.jpg').image(secure=True)
 
-        print(link)
+        # print(link)
         return Response(data=data.data)
         
 class StockApiView(ListCreateAPIView):

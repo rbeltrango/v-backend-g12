@@ -34,10 +34,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-cgkpia@4ed@lnqn)raas4tan0-_61^lpi^2zycpzn!_fmg)b6h'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # allowed hosts son los host que van a poder levantar la API
-ALLOWED_HOSTS = ['localhost','127.0.0.1']
+ALLOWED_HOSTS = ['localhost','127.0.0.1','restaurante-django-rbeltran.herokuapp.com']
 
 
 # Application definition
