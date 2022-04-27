@@ -1,5 +1,6 @@
 // usando ECMAScript
 import express from 'express'
+import cors from "cors";
 // usando CommonJs
 // const express = require('express')
 
@@ -10,6 +11,14 @@ servidor.use(express.json())
 // ahora puede recibir texto puro|recibir y entender los body que sean puro texto
 servidor.use(express.raw())
 servidor.use(express.urlencoded({extended:true}))
+// el metodo GET  siempre va ser accedido a pesar que solamente en el methods le indiquemos otro
+servidor.use(
+    cors({
+    origin: ["http://127.0.0.1"], 
+    methods:["POST","PUT", "DELETE"],
+    allowedHeaders:["Content_Type", "Authorization"],
+})
+);
 
 const productos = [{
     nombre:'platano',
@@ -44,7 +53,9 @@ servidor.get('/productos', (req, res)=>{
     })
 })
 
-servidor.get('/producto/:id', (req, res)=>{
+servidor
+    .route("/producto/:id")
+    .get((req, res)=>{
     console.log(req.params);
     const {id} = req.params
 
@@ -63,27 +74,43 @@ servidor.get('/producto/:id', (req, res)=>{
     }
 })
 // PUT
-servidor.put('/producto/:id', (req, res)=>{
+    .put((req, res)=>{
     // extraer el id
     const {id}=req.params
     // validar si existe esa poscicion en el arrgelo
     if (productos.length < id){
         return res.status(400).json({
+            // si no existe, emitir un 400 indicando que el producto a actualizar no existe
             message:'El producto a actualizar no existe'
         })
     }else{
+        // si existe, modficar con el body
         productos[id-1]=req.body
-        
+
         return res.json({
             message:'Producto actualizado exitosamente',
             content: productos[id-1]
         })
     }
 })
-    // si existe, modficar con el body
-    // si no existe, emitir un 400 indicando que el producto a actualizar no existe
+.delete((req, res)=>{
+    const {id}=req.params
+    if(productos.length<id){
+        return res.json({
+            message:'Producto a eliminar no existe'
+        })
+
+    }else{
+        // metodo de los arreglos para eliminar uno o mas elementos del areglo iniciando desde una 
+        //posicion e indicando la cantidad de elemntos a eliminar
+        productos.splice(id-1,1);
+        return res.json({
+            message:'Producto eliminado exitosamente'
+        });
+    }
+});  
 
 
 servidor.listen(3000, () =>{
-    console.log('Servidor corriendo exitosamente en el puerto 3000')
-})
+    console.log('Servidor corriendo exitosamente en el puerto 3000');
+});
