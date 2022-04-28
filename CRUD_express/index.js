@@ -63,7 +63,7 @@ servidor
         // 400 > bad request (mala solicitud)
         return res.status(400).json({
             message:'El producto no existe'
-        })
+        });
     }
     else{
         const data =productos[id-1]
