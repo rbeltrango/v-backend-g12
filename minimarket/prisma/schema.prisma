@@ -28,6 +28,10 @@ model Producto{
   precio Float
   unidadMedida UM_PRODUCTO @map("unidad_medida")
   categoria CATEGORIA_PRODUCTO
+
+  deteallePedidos DetallePedido[]
+
+  @@map("productos")
 }
 
 model Pedido{
@@ -35,9 +39,27 @@ model Pedido{
   fecha     DateTime    @db.Date
   total     Float
   estado PEDIDO_ESTADO
-  processId String? 
-  clienteId Int
+  processId String? @map("process_id")
+  clienteId Int @map("cliente_id")
   cliente Usuario @relation (fields:[clienteId], references:[id])
+
+  detallePedidos DetallePedido[]
+
+  @@map("pedidos")
+}
+
+model DetallePedido{
+  id            Int     @id @unique @default(autoincrement())
+  cantidad      Float
+  subTotal      Float   @map("sub_total")
+  unidadMedida UM_PRODUCTO
+  productoId    Int     @map("producto_id")
+  pedidoId      Int     @map("pedido_id")
+
+  producto Producto @relation(fields:[productoId], references:[id])
+  pedido Pedido @relation(fields: [pedidoId], references: [id])
+
+  @@map("detalle_pedidos")
 }
 
 enum PEDIDO_ESTADO {
