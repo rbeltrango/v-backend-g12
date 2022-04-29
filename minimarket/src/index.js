@@ -1,5 +1,5 @@
 import express,{json} from 'express'
-import {productoRouter} from './routes/productos.routes.js'
+import {productosRouter} from './routes/productos.routes.js'
 
 const app =express()
 
@@ -16,7 +16,7 @@ app.get('/',(req,res)=>{
 })
 })
 
-app.use(productoRouter)
+app.use(productosRouter)
 
 app.listen(PORT, ()=>{
     // LA COMA invertida indica que hay una variable en el codigo javascript
